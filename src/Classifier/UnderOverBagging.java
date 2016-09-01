@@ -2,6 +2,7 @@ package Classifier;
 
 import java.util.Random;
 
+import weka.classifiers.Classifier;
 import weka.classifiers.meta.Bagging;
 import weka.core.Instances;
 import weka.core.Randomizable;
@@ -15,6 +16,20 @@ import weka.filters.supervised.instance.Resample;
  * classifier
  */
 public class UnderOverBagging extends Bagging{
+	/** 
+	 * Stump method for building the classifiers.
+	 *
+	 * @param data the training data to be used for generating the
+	 * bagged classifier.
+	 * @exception Exception if the classifier could not be built successfully
+	 */
+	public void checkClassifier(Instances data) throws Exception {
+
+		if (m_Classifier == null) {
+			throw new Exception("A base classifier has not been specified!");
+		}
+		m_Classifiers = Classifier.makeCopies(m_Classifier, m_NumIterations);
+	}
 
 	/**
 	 * 
@@ -31,8 +46,7 @@ public class UnderOverBagging extends Bagging{
 		data = new Instances(data);
 		data.deleteWithMissingClass();
 
-		super.buildClassifier(data);
-
+		checkClassifier(data);
 		if (m_CalcOutOfBag && (m_BagSizePercent != 100)) {
 			throw new IllegalArgumentException("Bag size needs to be 100% if "
 					+ "out-of-bag error is to be calculated!");
@@ -55,7 +69,7 @@ public class UnderOverBagging extends Bagging{
 				bagData = data.resampleWithWeights(random, inBag[j]);
 			} else {
 
-				//Í³¼ÆÀà±ðÊµÀý¸öÊý£¬Ä¬ÈÏµÚÒ»¸öÀàÎªÉÙÊýÀà£¬µÚ¶þ¸öÀàÎª¶àÊýÀà
+				//Í³ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ïµï¿½Ò»ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½à£¬ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				int classNum[]=data.attributeStats(data.classIndex()).nominalCounts;
 				int minC, nMin=classNum[0];
 				int majC, nMaj=classNum[1];
@@ -72,12 +86,12 @@ public class UnderOverBagging extends Bagging{
 				tempData.randomize(random);
 				Resample filter = new Resample();
 				filter.setInputFormat(tempData);  // filter capabilities are checked here
-				filter.setBiasToUniformClass(1.0);//Á½¸öÀà½Ó½ü1:1²ÉÑù
+				filter.setBiasToUniformClass(1.0);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½1:1ï¿½ï¿½ï¿½ï¿½
 
 				double m_Percentage = 0.5;
 				//data.
 				double value = m_Percentage*nMaj*200/(nMin+nMaj);
-				//PercentageÉèÖÃµÄÊÇ×ÜÔö¼ÓµÄ±ÈÀý
+				//Percentageï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÓµÄ±ï¿½ï¿½ï¿½
 				filter.setSampleSizePercent(value);
 				//if (nMin<5) filter.setNearestNeighbors(nMin);
 				filter.setRandomSeed(nMaj*nMin+100);

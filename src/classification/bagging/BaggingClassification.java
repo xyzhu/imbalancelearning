@@ -1,7 +1,5 @@
 package classification.bagging;
 
-import java.util.Random;
-
 import classification.BasicClassification;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -16,19 +14,15 @@ public class BaggingClassification extends BasicClassification{
 
 
 	//using bagging classification method
-	public String getClassificationResult(int maxseed, Classifier classifier, String classifier_name) throws Exception {
-		String predictResult = "";
-		Random rand;
-		for(int randomSeed = 1;randomSeed<=maxseed;randomSeed++){
+	public String getClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
+		double validationResult[] = new double[9];
+		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
 			Bagging bag_classifier = new Bagging(); //set the classifier as bagging
-			bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
-			rand = new Random(randomSeed);	
-			Evaluation eval = new Evaluation(data);
-			eval.crossValidateModel(bag_classifier, data, 10, rand);//use 10-fold cross validataion
-			predictResult = getName("bag", classifier_name);
-			predictResult += getResult(eval);
+			bag_classifier.setClassifier(classifier); //set the basic classifier of bagging	
+			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
+			updateResult(validationResult, eval);
 		}
-		return predictResult;
+		return getResult("bag", classifier_name, validationResult, times);
 	}
 
 }

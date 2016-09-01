@@ -2,6 +2,7 @@ package Classifier;
 
 import java.util.Random;
 
+import weka.classifiers.Classifier;
 import weka.classifiers.meta.Bagging;
 import weka.core.AttributeStats;
 import weka.core.Instances;
@@ -12,6 +13,20 @@ import weka.filters.supervised.instance.SMOTE;
 
 
 public class SmoteBagging extends Bagging{
+	/** 
+	 * Stump method for building the classifiers.
+	 *
+	 * @param data the training data to be used for generating the
+	 * bagged classifier.
+	 * @exception Exception if the classifier could not be built successfully
+	 */
+	public void checkClassifier(Instances data) throws Exception {
+
+		if (m_Classifier == null) {
+			throw new Exception("A base classifier has not been specified!");
+		}
+		m_Classifiers = Classifier.makeCopies(m_Classifier, m_NumIterations);
+	}
 
 	/**
 	 * 
@@ -28,7 +43,7 @@ public class SmoteBagging extends Bagging{
 	    data = new Instances(data);
 	    data.deleteWithMissingClass();
 
-	    super.buildClassifier(data);
+	    checkClassifier(data);
 
 	    if (m_CalcOutOfBag && (m_BagSizePercent != 100)) {
 	      throw new IllegalArgumentException("Bag size needs to be 100% if "

@@ -1,9 +1,7 @@
 package classification;
 
-import java.util.Random;
-
-import evaluation.SampleEvaluation;
 import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
 public class ResampleSimpleClassification extends BasicClassification{
@@ -13,25 +11,18 @@ public class ResampleSimpleClassification extends BasicClassification{
 	}
 
 	//get the classification result without bagging
-	public String getClassificationResult(int maxseed, Classifier classifier, String classifier_name) throws Exception {
-		String predictResult = "";
-		Random rand;
+	public String getClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
+		double validationResult1[] = new double[9];
+		double validationResult2[] = new double[9];
 		//use different seed for 10-fold cross validation
-		for(int randomSeed = 1;randomSeed<=maxseed;randomSeed++){
-			rand = new Random(randomSeed);
-			SampleEvaluation eval = new SampleEvaluation(data);
-			eval.crossValidateModel(classifier, "oversample", data, 10, rand);//use 10-fold cross validataion
-			predictResult = getName("oversample", classifier_name);
-			predictResult += getResult(eval);
+		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
+			Evaluation eval = evaluate(classifier, randomSeed, "over");
+			updateResult(validationResult1, eval);
 		}
-		
-		for(int randomSeed = 1;randomSeed<=maxseed;randomSeed++){
-			rand = new Random(randomSeed);
-			SampleEvaluation eval = new SampleEvaluation(data);
-			eval.crossValidateModel(classifier, "undersample", data, 10, rand);//use 10-fold cross validataion
-			predictResult += getName(",undersample", classifier_name);
-			predictResult += getResult(eval);
+		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
+			Evaluation eval = evaluate(classifier, randomSeed, "under");
+			updateResult(validationResult2, eval);
 		}
-		return predictResult;
+		return getResult("oversample", classifier_name, validationResult1, times) + getResult(",undersample", classifier_name, validationResult2, times);
 	}
 }

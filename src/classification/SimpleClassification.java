@@ -1,6 +1,5 @@
 package classification;
 
-import java.util.Random;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -13,17 +12,14 @@ public class SimpleClassification extends BasicClassification{
 	}
 
 	//get the classification result without bagging
-	public String getClassificationResult(int maxseed, Classifier classifier, String classifier_name) throws Exception {
-		String predictResult = "";
-		Random rand;
+	public String getClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
+		double validationResult[] = new double[9];
+		
 		//use different seed for 10-fold cross validation
-		for(int randomSeed = 1;randomSeed<=maxseed;randomSeed++){
-			rand = new Random(randomSeed);
-			Evaluation eval = new Evaluation(data);
-			eval.crossValidateModel(classifier, data, 10, rand);//use 10-fold cross validataion
-			predictResult = getName("simple", classifier_name);
-			predictResult += getResult(eval);
+		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
+			Evaluation eval = evaluate(classifier, randomSeed, "none");
+			updateResult(validationResult, eval);
 		}
-		return predictResult;
+		return getResult("simple", classifier_name, validationResult, times);
 	}
 }

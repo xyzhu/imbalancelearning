@@ -1,7 +1,5 @@
 package classification.bagging;
 
-import java.util.Random;
-
 import classification.BasicClassification;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -17,77 +15,64 @@ public class ResampleInBaggingClassification extends BasicClassification{
 		super(data);
 	}
 
-	public String getClassificationResult(int maxseed, Classifier classifier, String classifier_name) throws Exception{
+	public String getClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception{
 		String predictResult = "";
-		predictResult += getOverBagClassificationResult(maxseed, classifier, classifier_name);
-		predictResult += getUnderBagClassificationResult(maxseed, classifier, classifier_name);
-		predictResult += getUnderOverBagClassificationResult(maxseed, classifier, classifier_name);
-		//predictResult += getSmoteBagClassificationResult(maxseed, classifier, classifier_name);
+		predictResult += getOverBagClassificationResult(classifier, classifier_name, times);
+		predictResult += getUnderBagClassificationResult(classifier, classifier_name, times);
+		predictResult += getUnderOverBagClassificationResult(classifier, classifier_name, times);
+		//predictResult += getSmoteBagClassificationResult(classifier, classifier_name, times);
 		return predictResult;
 	}
 
-	private String getSmoteBagClassificationResult(int maxseed,
-			Classifier classifier, String classifier_name) throws Exception {
-		String predictResult = "";
-		Random rand;
-		for(int randomSeed = 1;randomSeed<=maxseed;randomSeed++){
-			SmoteBagging bag_classifier = new SmoteBagging(); //set the classifier as bagging
-			bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
-			rand = new Random(randomSeed);	
-			Evaluation eval = new Evaluation(data);
-			eval.crossValidateModel(bag_classifier, data, 10, rand);//use 10-fold cross validataion
-			predictResult = getName(",smotebag", classifier_name);
-			predictResult += getResult(eval);
+	public String getSmoteBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
+		double validationResult[] = new double[9];
+		SmoteBagging bag_classifier = new SmoteBagging(); //set the classifier as bagging
+		bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
+		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
+			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
+			updateResult(validationResult, eval);
 		}
-		return predictResult;
+		return getResult(",smotebag", classifier_name, validationResult, times);
+
 	}
 
 	//using bagging classification method with under sampling
-	public String getUnderBagClassificationResult(int maxseed, Classifier classifier, String classifier_name) throws Exception {
-		String predictResult = "";
-		Random rand;
-		for(int randomSeed = 1;randomSeed<=maxseed;randomSeed++){
-			UnderBagging bag_classifier = new UnderBagging(); //set the classifier as bagging
-			bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
-			rand = new Random(randomSeed);	
-			Evaluation eval = new Evaluation(data);
-			eval.crossValidateModel(bag_classifier, data, 10, rand);//use 10-fold cross validataion
-			predictResult = getName(",underbag", classifier_name);
-			predictResult += getResult(eval);
+	public String getUnderBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
+		double validationResult[] = new double[9];
+		UnderBagging bag_classifier = new UnderBagging(); //set the classifier as bagging
+		bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
+		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
+			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
+			updateResult(validationResult, eval);
 		}
-		return predictResult;
+		return getResult(",underbag", classifier_name, validationResult, times);
+
 	}
 
 
-	private String getOverBagClassificationResult(int maxseed, Classifier classifier, String classifier_name) throws Exception {
-		String predictResult = "";
-		Random rand;
-		for(int randomSeed = 1;randomSeed<=maxseed;randomSeed++){
-			OverBagging bag_classifier = new OverBagging(); //set the classifier as bagging
-			bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
-			rand = new Random(randomSeed);	
-			Evaluation eval = new Evaluation(data);
-			eval.crossValidateModel(bag_classifier, data, 10, rand);//use 10-fold cross validataion
-			predictResult = getName("overbag", classifier_name);
-			predictResult += getResult(eval);
+	private String getOverBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
+		double validationResult[] = new double[9];
+		OverBagging bag_classifier = new OverBagging(); //set the classifier as bagging
+		bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
+		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
+			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
+			updateResult(validationResult, eval);
 		}
-		return predictResult;
+		return getResult("overbag", classifier_name, validationResult, times);
+
 	}
-	
-	
-	private String getUnderOverBagClassificationResult(int maxseed, Classifier classifier, String classifier_name) throws Exception {
-		String predictResult = "";
-		Random rand;
-		for(int randomSeed = 1;randomSeed<=maxseed;randomSeed++){
-			UnderOverBagging bag_classifier = new UnderOverBagging(); //set the classifier as bagging
-			bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
-			rand = new Random(randomSeed);	
-			Evaluation eval = new Evaluation(data);
-			eval.crossValidateModel(bag_classifier, data, 10, rand);//use 10-fold cross validataion
-			predictResult = getName(",underoverbag", classifier_name);
-			predictResult += getResult(eval);
+
+
+	private String getUnderOverBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
+		double validationResult[] = new double[9];
+		UnderOverBagging bag_classifier = new UnderOverBagging(); //set the classifier as bagging
+		bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
+		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
+			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
+			updateResult(validationResult, eval);
 		}
-		return predictResult;
+		return getResult(",underoverbag", classifier_name, validationResult, times);
+
 	}
 
 }

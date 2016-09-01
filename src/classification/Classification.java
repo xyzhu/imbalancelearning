@@ -60,32 +60,32 @@ public class Classification {
 	}
 
 	
-	public String classify(String classifier_name_input, String filepath, String project)  throws Exception{
+	public String predict(String classifier_name_input, String filepath, String project, int times)  throws Exception{
 		setClassifier(classifier_name_input);
 		System.out.println("simple");
 		BasicClassification use_classification = new SimpleClassification(data);
 		String predict_result = "";
-		predict_result = project + "," + use_classification.classify(1, classifier, classifier_name);
+		predict_result = project + "," + use_classification.classify(times, classifier, classifier_name);
 		System.out.println("resample");
 		use_classification = new ResampleSimpleClassification(data);
-		predict_result += "," + use_classification.classify(1, classifier, classifier_name);
+		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
 		System.out.println("bagging");
 		use_classification = new BaggingClassification(data);
-		predict_result += "," + use_classification.classify(1, classifier, classifier_name);
+		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
 		System.out.println("resample in bagging");
 		use_classification = new ResampleInBaggingClassification(data);
-		predict_result += "," + use_classification.classify(1, classifier, classifier_name);
+		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
 		
 		//boosting
 		System.out.println("boosting");
 		use_classification = new BoostingClassification(data);
-		predict_result += "," + use_classification.classify(1, classifier, classifier_name);
+		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
 		System.out.println("resample boost");
 		use_classification = new ResampleBoostClassification(data);
-		predict_result += "," + use_classification.classify(1, classifier, classifier_name);
+		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
 		System.out.println("resample in boost");
 		use_classification = new ResampleInBoostingClassification(data);
-		predict_result += "," + use_classification.classify(1, classifier, classifier_name);
+		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
 		return predict_result;
 	}
 
