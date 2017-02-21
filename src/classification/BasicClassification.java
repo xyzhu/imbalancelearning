@@ -52,16 +52,16 @@ public class BasicClassification {
 	//save the interested result of the classification
 	public String getResult(String methodname, String classifiername, double validationResult[], int times) throws Exception {
 		df = (DecimalFormat) NumberFormat.getInstance();//use df to format result of be form of 0.0000
-		df.applyPattern("0.0000");
+		df.applyPattern("0.0");
 		double accuracy = validationResult[0]/times;
-		double recall_0 = validationResult[1]/times;
-		double recall_1 = validationResult[2]/times;
-		double precison_0 = validationResult[3]/times;
-		double precison_1 = validationResult[4]/times;
-		double fmeasure_0 = validationResult[5]/times;
-		double fmeasure_1 = validationResult[6]/times;
-		double gmean = validationResult[7]/times;
-		double auc = validationResult[8]/times;
+		double recall_0 = validationResult[1]*100/times;
+		double recall_1 = validationResult[2]*100/times;
+		double precison_0 = validationResult[3]*100/times;
+		double precison_1 = validationResult[4]*100/times;
+		double fmeasure_0 = validationResult[5]*100/times;
+		double fmeasure_1 = validationResult[6]*100/times;
+		double gmean = validationResult[7]*100/times;
+		double auc = validationResult[8]*100/times;
 		return methodname + ", " + classifiername + ", " + df.format(accuracy) + ", " + df.format(recall_0) + ", " + df.format(recall_1)	+ ", "
 		+ df.format(precison_0) + ", " + df.format(precison_1) + ", "+ df.format(fmeasure_0) + ", " 
 		+ df.format(fmeasure_1) + "," + df.format(gmean) + "," + df.format(auc) + "\n";

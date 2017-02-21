@@ -8,6 +8,7 @@ import Classifier.OverBagging;
 import Classifier.SmoteBagging;
 import Classifier.UnderBagging;
 import Classifier.UnderOverBagging;
+import Classifier.UnderOverBaggingOld;
 
 public class ResampleInBaggingClassification extends BasicClassification{
 
@@ -17,8 +18,8 @@ public class ResampleInBaggingClassification extends BasicClassification{
 
 	public String getClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception{
 		String predictResult = "";
-		predictResult += getOverBagClassificationResult(classifier, classifier_name, times);
-		predictResult += getUnderBagClassificationResult(classifier, classifier_name, times);
+		//predictResult += getOverBagClassificationResult(classifier, classifier_name, times);
+		//predictResult += getUnderBagClassificationResult(classifier, classifier_name, times);
 		predictResult += getUnderOverBagClassificationResult(classifier, classifier_name, times);
 		//predictResult += getSmoteBagClassificationResult(classifier, classifier_name, times);
 		return predictResult;
@@ -66,12 +67,12 @@ public class ResampleInBaggingClassification extends BasicClassification{
 	private String getUnderOverBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
 		double validationResult[] = new double[9];
 		UnderOverBagging bag_classifier = new UnderOverBagging(); //set the classifier as bagging
-		bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
+		bag_classifier.setBaseClassifier(classifier);//set the base classifier of bagging
 		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
 			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
 			updateResult(validationResult, eval);
 		}
-		return getResult(",underoverbag", classifier_name, validationResult, times);
+		return getResult("underoverbag", classifier_name, validationResult, times);
 
 	}
 
