@@ -64,7 +64,7 @@ public class UnderBoosting extends AdaBoostM1{
 			do {
 				sample = trainData.resampleWithWeights(randomInstance, weights);
 				//use under sample to balance the sample
-				Instances tempData = new Instances(data);
+				Instances tempData = new Instances(sample);
 				tempData.randomize(randomInstance);
 				SpreadSubsample undersample = new SpreadSubsample();
 				undersample.setInputFormat(tempData);

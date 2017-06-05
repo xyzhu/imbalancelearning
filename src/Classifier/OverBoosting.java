@@ -69,7 +69,7 @@ public class OverBoosting extends AdaBoostM1{
 			do {
 				sample = trainData.resampleWithWeights(randomInstance, weights);
 				//use over sample to balance the sample
-				Instances tempData = new Instances(data);
+				Instances tempData = new Instances(sample);
 				tempData.randomize(randomInstance);
 				OverSubsample oversample = new OverSubsample();
 				oversample.setInputFormat(tempData);	    	  
