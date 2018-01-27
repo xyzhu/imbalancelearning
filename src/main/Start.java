@@ -39,7 +39,7 @@ public class Start {
 		//String projects[] = {"eclipse","apache", "openoffice"};
 		
 		//test projects
-		String projects[] = {"weather"};
+		String projects[] = {"breast-cancer"};
 		Util util = new Util();
 		String output_file = filepath + "result.txt";
 		String measure_name = "project, method, classifier, accuracy, recall-0, recall-1, precision-0, precision-1, fMeasure-0, fMeasure-1, gmean, auc \n";

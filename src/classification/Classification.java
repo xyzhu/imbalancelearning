@@ -1,6 +1,7 @@
 package classification;
 
 import classification.bagging.BaggingClassification;
+import classification.bagging.ResampleBaggingClassification;
 import classification.bagging.ResampleInBaggingClassification;
 import classification.boosting.BoostingClassification;
 import classification.boosting.ResampleBoostClassification;
@@ -72,6 +73,9 @@ public class Classification {
 		System.out.println("bagging");
 		use_classification = new BaggingClassification(data);
 		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
+		System.out.println("resample bagging");
+		use_classification = new ResampleBaggingClassification(data);
+		predict_result += ", " + use_classification.classify(times, classifier, classifier_name);
 		System.out.println("resample in bagging");
 		use_classification = new ResampleInBaggingClassification(data);
 		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
