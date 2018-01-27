@@ -16,7 +16,7 @@ public class Start {
 		 * Command line parsing
 		 */
 		CmdLineParser cmdparser = new CmdLineParser();
-		CmdLineParser.Option project_opt = cmdparser.addStringOption('p', "project");
+		CmdLineParser.Option dataset_opt = cmdparser.addStringOption('d', "dataset");
 		CmdLineParser.Option filepath_opt = cmdparser.addStringOption('f', "filepath");
 		CmdLineParser.Option classifier_opt = cmdparser.addStringOption('c', "classifier");
 
@@ -28,28 +28,23 @@ public class Start {
 			System.exit(2);
 		}
 
-		String project = (String) cmdparser.getOptionValue(project_opt, "weather");
+		String dataset = (String) cmdparser.getOptionValue(dataset_opt, "weather");
 		String filepath = (String) cmdparser.getOptionValue(filepath_opt, "");
 		String classifier_name = (String) cmdparser.getOptionValue(classifier_opt,"j48");
- 
-		//change classification projects
-		//String projects[] = {"ant", "camel","itext","jedit","lucene","synapse","tomcat","voldemort"};
-		
-		//reopen bug projects
-		//String projects[] = {"eclipse","apache", "openoffice"};
-		
-		//test projects
-		String projects[] = {"breast-cancer"};
+
+		int numCrossValidations = 1;
+		String datasets[] = {"breast-cancer"};
 		Util util = new Util();
 		String output_file = filepath + "result.txt";
-		String measure_name = "project, method, classifier, accuracy, recall-0, recall-1, precision-0, precision-1, fMeasure-0, fMeasure-1, gmean, auc \n";
+		String measure_name = "dataset, method, classifier, accuracy, recall-0, recall-1, precision-0, precision-1, fMeasure-0, fMeasure-1, gmean, auc \n";
 		util.saveResult(measure_name, output_file);
 		String predict_result = "";
-		for(int i=0;i<projects.length;i++){
-			project = projects[i];
-			System.out.println(project);
+		int numDataset = datasets.length;
+		for(int i=0;i<numDataset;i++){
+			dataset = datasets[i];
+			System.out.println(dataset);
 			//read in the input arff file		
-			String inputfile = filepath + project+".arff";
+			String inputfile = filepath + dataset+".arff";
 
 			FileReader fr = new FileReader(inputfile);
 			BufferedReader br = new BufferedReader(fr);
@@ -61,7 +56,7 @@ public class Start {
 			int count[] = as.nominalCounts;		
 			System.out.println("Number of buggy instances: "+count[1]);
 			Classification classification = new Classification(data);
-			predict_result = classification.predict(classifier_name, filepath, project, 1);
+			predict_result = classification.predict(classifier_name, filepath, dataset, numCrossValidations);
 			util.appendResult(predict_result, output_file);
 		}
 	}
