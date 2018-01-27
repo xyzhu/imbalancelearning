@@ -2,21 +2,20 @@ package Classifier;
 
 import java.util.Random;
 
-import resample.OverSubsample;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.Bagging;
 import weka.core.Instances;
 import weka.core.Randomizable;
 import weka.core.Utils;
 import weka.filters.Filter;
+import weka.filters.supervised.instance.SpreadSubsample;
 
 /*
  * This classifier extends Bagging, but rewrite the buildClassifier
- * method. It use oversample to create the trainind dataset for each base
+ * method. It use undersample to create the trainind dataset for each base
  * classifier
  */
-public class OverBagging extends Bagging{
-
+public class UnderInBagging extends Bagging{
 	/** 
 	 * Stump method for building the classifiers.
 	 *
@@ -70,14 +69,14 @@ public class OverBagging extends Bagging{
 				// bagData = resampleWithWeights(data, random, inBag[j]);
 				bagData = data.resampleWithWeights(random, inBag[j]);
 			} else {
-				//bagData = data.rCopyOfUnderBaggingesampleWithWeights(random);
+				//bagData = data.resampleWithWeights(random);
 				//rewrite the sampling method and use under sampling
 				Instances tempData = new Instances(data);
 				tempData.randomize(random);
-				OverSubsample oversample = new OverSubsample();
-				oversample.setInputFormat(tempData);	    	  
-				oversample.setDistributionSpread(1);//set the ratio of the major class sample to the minor class
-				bagData = Filter.useFilter(tempData, oversample);
+				SpreadSubsample undersample = new SpreadSubsample();
+				undersample.setInputFormat(tempData);
+				undersample.setDistributionSpread(1);//set the ratio of the major class sample to the minor clas
+				bagData = Filter.useFilter(tempData, undersample);
 				if (bagSize < data.numInstances()) {
 					bagData.randomize(random);
 					Instances newBagData = new Instances(bagData, 0, bagSize);

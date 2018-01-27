@@ -75,7 +75,7 @@ public class Classification {
 		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
 		System.out.println("resample bagging");
 		use_classification = new ResampleBaggingClassification(data);
-		predict_result += ", " + use_classification.classify(times, classifier, classifier_name);
+		predict_result += "," + use_classification.classify(times, classifier, classifier_name);
 		System.out.println("resample in bagging");
 		use_classification = new ResampleInBaggingClassification(data);
 		predict_result += "," + use_classification.classify(times, classifier, classifier_name);

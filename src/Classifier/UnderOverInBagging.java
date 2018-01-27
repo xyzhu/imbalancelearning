@@ -34,7 +34,7 @@ import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 
 
-public class UnderOverBagging
+public class UnderOverInBagging
 extends RandomizableMultipleClassifiersCombiner
 implements TechnicalInformationHandler {
 
@@ -979,6 +979,6 @@ implements TechnicalInformationHandler {
 	 * -t training file [-T test file] [-c class index]
 	 */
 	public static void main(String [] argv) {
-		runClassifier(new UnderOverBagging(), argv);
+		runClassifier(new UnderOverInBagging(), argv);
 	}
 }

@@ -4,10 +4,10 @@ import classification.BasicClassification;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import Classifier.OverBagging;
-import Classifier.SmoteBagging;
-import Classifier.UnderBagging;
-import Classifier.UnderOverBagging;
+import Classifier.OverInBagging;
+import Classifier.SmoteInBagging;
+import Classifier.UnderInBagging;
+import Classifier.UnderOverInBagging;
 //import Classifier.UnderOverBaggingOld;
 
 public class ResampleInBaggingClassification extends BasicClassification{
@@ -27,52 +27,52 @@ public class ResampleInBaggingClassification extends BasicClassification{
 
 	public String getSmoteBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
 		double validationResult[] = new double[9];
-		SmoteBagging bag_classifier = new SmoteBagging(); //set the classifier as bagging
+		SmoteInBagging bag_classifier = new SmoteInBagging(); //set the classifier as bagging
 		bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
 		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
 			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
 			updateResult(validationResult, eval);
 		}
-		return getResult(",smotebag", classifier_name, validationResult, times);
+		return getResult(",smoteinbag", classifier_name, validationResult, times);
 
 	}
 
 	//using bagging classification method with under sampling
 	public String getUnderBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
 		double validationResult[] = new double[9];
-		UnderBagging bag_classifier = new UnderBagging(); //set the classifier as bagging
+		UnderInBagging bag_classifier = new UnderInBagging(); //set the classifier as bagging
 		bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
 		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
 			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
 			updateResult(validationResult, eval);
 		}
-		return getResult(",underbag", classifier_name, validationResult, times);
+		return getResult(",underinbag", classifier_name, validationResult, times);
 
 	}
 
 
 	private String getOverBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
 		double validationResult[] = new double[9];
-		OverBagging bag_classifier = new OverBagging(); //set the classifier as bagging
+		OverInBagging bag_classifier = new OverInBagging(); //set the classifier as bagging
 		bag_classifier.setClassifier(classifier); //set the basic classifier of bagging
 		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
 			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
 			updateResult(validationResult, eval);
 		}
-		return getResult("overbag", classifier_name, validationResult, times);
+		return getResult("overinbag", classifier_name, validationResult, times);
 
 	}
 
 
 	private String getUnderOverBagClassificationResult(Classifier classifier, String classifier_name, int times) throws Exception {
 		double validationResult[] = new double[9];
-		UnderOverBagging bag_classifier = new UnderOverBagging(); //set the classifier as bagging
+		UnderOverInBagging bag_classifier = new UnderOverInBagging(); //set the classifier as bagging
 		bag_classifier.setBaseClassifier(classifier);//set the base classifier of bagging
 		for(int randomSeed = 1;randomSeed<=times;randomSeed++){
 			Evaluation eval = evaluate(bag_classifier, randomSeed, "none");
 			updateResult(validationResult, eval);
 		}
-		return getResult("underoverbag", classifier_name, validationResult, times);
+		return getResult("underoverinbag", classifier_name, validationResult, times);
 
 	}
 

@@ -12,7 +12,7 @@ import weka.filters.Filter;
 import weka.filters.supervised.instance.SMOTE;
 
 
-public class SmoteBagging extends Bagging{
+public class SmoteInBagging extends Bagging{
 	/** 
 	 * Stump method for building the classifiers.
 	 *
